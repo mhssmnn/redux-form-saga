@@ -66,7 +66,7 @@ function *formActionSaga () {
     if (winner.success) {
       yield call(resolve, winner.success);
     } else {
-      yield call(reject, winner.fail);
+      yield call(reject, winner.fail && winner.fail.payload ? winner.fail.payload : winner.fail);
     }
   }
 }
