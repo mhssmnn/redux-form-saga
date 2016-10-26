@@ -1,5 +1,6 @@
 import 'babel-polyfill';
-import { PROMISE, createFormAction, formActionSaga } from '../lib';
+import { PROMISE, createFormAction, formActionSaga, handlePromiseSaga } from '../lib';
+import { takeEvery } from 'redux-saga';
 import { take, race, put, call } from 'redux-saga/effects';
 import { expect } from 'chai';
 import { isFSA } from 'flux-standard-action';
@@ -74,65 +75,70 @@ describe('redux-form-saga', () => {
   });
 
   describe('formActionSaga', () => {
-    let iterator, action, defer, request, types;
+    let action, defer, request, types;
 
     beforeEach(() => {
-      iterator = formActionSaga();
-      defer = {
-        resolve: () => {},
-        reject: () => {}
-      };
       request = {
         type: REQUEST,
-        payload: {}
+        payload: {},
+      };
+      defer = {
+        resolve: () => {},
+        reject: () => {},
       };
       types = [ SUCCESS, FAILURE ];
+
       action = {
         type: PROMISE,
         payload: {
           defer,
           request,
           types
-        }
+        },
       };
     });
 
-    it('with a successful run it should yield with a TAKE of type FAILURE', () => {
-      run({ success: 'A success' });
-    });
-
-    it('with a failed run it should yield with a TAKE of type FAILURE', () => {
-      run({ fail: 'A failure!' });
-    });
-
-    function run(winner) {
-      expect(iterator.next().value).to.deep.equal(
-        take(PROMISE)
-      );
-
-      expect(iterator.next(action).value).to.deep.equal(
-        put(request)
-      );
+    it('should take every PROMISE action and run handlePromise iterator', function () {
+      const iterator = formActionSaga();
 
       expect(iterator.next().value).to.deep.equal(
-        race({ success: take(SUCCESS), fail: take(FAILURE) })
+        call(takeEvery, PROMISE, handlePromiseSaga)
       );
+      expect(iterator.next().done).to.be.true;
+    });
 
-      if (winner.success) {
-        expect(iterator.next(winner).value).to.deep.equal(
-          call(defer.resolve, winner.success)
-        );
-      } else {
-        expect(iterator.next(winner).value).to.deep.equal(
-          call(defer.reject, winner.fail)
-        );
+    describe('handlePromiseSaga', () => {
+      let iterator;
+
+      beforeEach(() => {
+        iterator = handlePromiseSaga(action);
+      });
+
+      it('with a successful run it should yield with a TAKE of type FAILURE', () => {
+        run({ success: 'A success' });
+      });
+
+      it('with a failed run it should yield with a TAKE of type FAILURE', () => {
+        run({ fail: 'A failure!' });
+      });
+      
+      function run(winner) {
+        expect(iterator.next().value).to.deep.equal([
+          race({ success: take(SUCCESS), fail: take(FAILURE) }),
+          put(request),
+        ]);
+
+        if (winner.success) {
+          expect(iterator.next([winner]).value).to.deep.equal(
+              call(defer.resolve, winner.success)
+          );
+        } else {
+          expect(iterator.next([winner]).value).to.deep.equal(
+              call(defer.reject, winner.fail)
+          );
+        }
       }
-
-      expect(iterator.next().value).to.deep.equal(
-        take(PROMISE)
-      );
-    }
-
+    });
   });
 });
 

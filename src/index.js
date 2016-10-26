@@ -1,3 +1,4 @@
+import { takeEvery } from 'redux-saga';
 import { take, race, put, call } from 'redux-saga/effects';
 
 const identity = i => i;
@@ -49,19 +50,18 @@ function createFormAction (requestAction, types, payloadCreator = identity) {
   }, actionMethods);
 };
 
-function *formActionSaga () {
-  while (true) {
-    let action = yield take(PROMISE);
-    let { request, defer, types } = action.payload;
-    let { resolve, reject } = defer;
-    let [ SUCCESS, FAIL ] = types;
+function *handlePromiseSaga({ payload }) {
+  const { request, defer, types } = payload;
+  const { resolve, reject } = defer;
+  const [ SUCCESS, FAIL ] = types;
 
-    yield put(request);
-
-    const winner = yield race({
+  const [ winner ] = yield [
+    race({
       success: take(SUCCESS),
-      fail: take(FAIL)
-    });
+      fail: take(FAIL),
+    }),
+    put(request),
+  ];
 
     if (winner.success) {
       yield call(resolve, winner.success);
@@ -71,10 +71,15 @@ function *formActionSaga () {
   }
 }
 
+function *formActionSaga() {
+  yield call(takeEvery, PROMISE, handlePromiseSaga);
+}
+
 export {
   PROMISE,
   createFormAction,
-  formActionSaga
+  formActionSaga,
+  handlePromiseSaga,
 }
 
 export default formActionSaga;
