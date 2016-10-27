@@ -63,11 +63,10 @@ function *handlePromiseSaga({ payload }) {
     put(request),
   ];
 
-    if (winner.success) {
-      yield call(resolve, winner.success && winner.success.payload ? winner.success.payload : winner.success);
-    } else {
-      yield call(reject, winner.fail && winner.fail.payload ? winner.fail.payload : winner.fail);
-    }
+  if (winner.success) {
+    yield call(resolve, winner.success && winner.success.payload ? winner.success.payload : winner.success);
+  } else {
+    yield call(reject, winner.fail && winner.fail.payload ? winner.fail.payload : winner.fail);
   }
 }
 

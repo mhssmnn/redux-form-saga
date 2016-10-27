@@ -18,7 +18,7 @@
     "no-script-url": [0],
     "space-unary-ops": [0],
     "consistent-return": [0],
-    "comma-dangle": 1,
+    "comma-dangle": [1, "only-multiline"],
     "no-mixed-requires": [1],
     "no-underscore-dangle": [0],
     "no-multi-spaces": [1],

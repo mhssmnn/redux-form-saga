@@ -9,6 +9,11 @@ const PREFIX = 'PREFIX';
 const REQUEST = `${PREFIX}_REQUEST`;
 const SUCCESS = `${PREFIX}_SUCCESS`;
 const FAILURE = `${PREFIX}_FAILURE`;
+class SubmissionError {
+  constructor(errors) {
+    this.error = errors;
+  }
+}
 
 describe('redux-form-saga', () => {
   describe('createFormAction', () => {
@@ -104,6 +109,7 @@ describe('redux-form-saga', () => {
       expect(iterator.next().value).to.deep.equal(
         call(takeEvery, PROMISE, handlePromiseSaga)
       );
+
       expect(iterator.next().done).to.be.true;
     });
 
@@ -115,13 +121,35 @@ describe('redux-form-saga', () => {
       });
 
       it('with a successful run it should yield with a TAKE of type FAILURE', () => {
-        run({ success: 'A success' });
+        run({ success: { payload: 'A success' } });
       });
 
-      it('with a failed run it should yield with a TAKE of type FAILURE', () => {
-        run({ fail: 'A failure!' });
+      describe('with a failed run', () => {
+        it('should yield with a TAKE of type FAILURE', () => {
+          run({ fail: { payload: 'A failure!' } });
+        });
+
+        it('should call the promise reject method with a submission ' +
+           'error if the failure payload is a submission error', () => {
+          const winner = {
+            fail: {
+              type: FAILURE,
+              payload: new SubmissionError({ _error: 'A failure!' })
+            }
+          };
+
+          expect(iterator.next().value).to.deep.equal([
+            race({ success: take(SUCCESS), fail: take(FAILURE) }),
+            put(request),
+          ]);
+
+          expect(iterator.next([winner]).value).to.deep.equal(
+            call(defer.reject, new SubmissionError({ _error: 'A failure!' }))
+          );
+        });
       });
-      
+
+
       function run(winner) {
         expect(iterator.next().value).to.deep.equal([
           race({ success: take(SUCCESS), fail: take(FAILURE) }),
@@ -130,11 +158,11 @@ describe('redux-form-saga', () => {
 
         if (winner.success) {
           expect(iterator.next([winner]).value).to.deep.equal(
-              call(defer.resolve, winner.success)
+            call(defer.resolve, winner.success.payload)
           );
         } else {
           expect(iterator.next([winner]).value).to.deep.equal(
-              call(defer.reject, winner.fail)
+            call(defer.reject, winner.fail.payload)
           );
         }
       }
