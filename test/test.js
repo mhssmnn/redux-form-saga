@@ -4,16 +4,12 @@ import { takeEvery } from 'redux-saga';
 import { take, race, put, call } from 'redux-saga/effects';
 import { expect } from 'chai';
 import { isFSA } from 'flux-standard-action';
+import { SubmissionError } from 'redux-form';
 
 const PREFIX = 'PREFIX';
 const REQUEST = `${PREFIX}_REQUEST`;
 const SUCCESS = `${PREFIX}_SUCCESS`;
 const FAILURE = `${PREFIX}_FAILURE`;
-class SubmissionError {
-  constructor(errors) {
-    this.error = errors;
-  }
-}
 
 describe('redux-form-saga', () => {
   describe('createFormAction', () => {
@@ -126,7 +122,7 @@ describe('redux-form-saga', () => {
 
       describe('with a failed run', () => {
         it('should yield with a TAKE of type FAILURE', () => {
-          run({ fail: { payload: 'A failure!' } });
+          run({ fail: { payload: { _error: 'A failure!' } } });
         });
 
         it('should call the promise reject method with a submission ' +
@@ -134,7 +130,7 @@ describe('redux-form-saga', () => {
           const winner = {
             fail: {
               type: FAILURE,
-              payload: new SubmissionError({ _error: 'A failure!' })
+              payload: { _error: 'A failure!' }
             }
           };
 
@@ -162,7 +158,7 @@ describe('redux-form-saga', () => {
           );
         } else {
           expect(iterator.next([winner]).value).to.deep.equal(
-            call(defer.reject, winner.fail.payload)
+            call(defer.reject, new SubmissionError(winner.fail.payload))
           );
         }
       }

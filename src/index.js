@@ -1,5 +1,6 @@
 import { takeEvery } from 'redux-saga';
 import { take, race, put, call } from 'redux-saga/effects';
+import { SubmissionError } from 'redux-form';
 
 const identity = i => i;
 const PROMISE = '@@redux-form-saga/PROMISE';
@@ -66,7 +67,7 @@ function *handlePromiseSaga({ payload }) {
   if (winner.success) {
     yield call(resolve, winner.success && winner.success.payload ? winner.success.payload : winner.success);
   } else {
-    yield call(reject, winner.fail && winner.fail.payload ? winner.fail.payload : winner.fail);
+    yield call(reject, winner.fail && winner.fail.payload ? new SubmissionError(winner.fail.payload) : winner.fail);
   }
 }
 
