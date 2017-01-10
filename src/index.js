@@ -1,5 +1,4 @@
-import { takeEvery } from 'redux-saga';
-import { take, race, put, call } from 'redux-saga/effects';
+import { take, takeEvery, race, put, call } from 'redux-saga/effects';
 
 const identity = i => i;
 const PROMISE = '@@redux-form-saga/PROMISE';
@@ -71,7 +70,7 @@ function *handlePromiseSaga({ payload }) {
 }
 
 function *formActionSaga() {
-  yield call(takeEvery, PROMISE, handlePromiseSaga);
+  yield takeEvery(PROMISE, handlePromiseSaga);
 }
 
 export {
