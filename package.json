@@ -1,6 +1,6 @@
 {
   "name": "redux-form-saga",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "An action creator and saga for integrating Redux Form and Redux Saga",
   "keywords": [
     "redux-form",
@@ -32,10 +32,10 @@
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
     "redux-form": "^5.2.5",
-    "redux-saga": "^0.10.5"
+    "redux-saga": "^0.14.2"
   },
   "peerDependencies": {
-    "redux-saga": "*",
+    "redux-saga": ">= 0.14.2 < 1",
     "redux-form": "*"
   },
   "repository": {
