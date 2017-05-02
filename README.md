@@ -96,6 +96,11 @@ export function *loginFlow () {
 }
 ```
 
+## Forks
+[`redux-saga-actions`](https://github.com/afitiskin/redux-saga-actions) – Improved documentation, updated API
+
+[`redux-saga-routines`](https://github.com/afitiskin/redux-saga-routines) – Reworked idea of `redux-saga-actions`
+
 ## Scripts
 
 ```
