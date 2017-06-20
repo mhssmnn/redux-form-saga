@@ -13,6 +13,7 @@
     "submit"
   ],
   "main": "lib/index.js",
+  "module": "src/index.js",
   "devDependencies": {
     "babel-cli": "^6.4.5",
     "babel-eslint": "^6.1.2",
