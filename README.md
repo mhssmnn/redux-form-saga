@@ -63,7 +63,7 @@ Then, let's create some form:
 // LoginForm.js
 
 import React, { Component } from 'react'
-import { reduxForm, Field } from 'redux-form'; 
+import { reduxForm, Field } from 'redux-form';
 
 import { login } from './actions'; // importing our action
 
@@ -73,7 +73,7 @@ export default class LoginForm extends Component {
     const submit = handleSubmit(login); // creating our submit handler by passing our action
     // to handleSubmit as it stated in redux-form documentation
     // and bind our submit handler to onSubmit action:
-    
+
     return (
       <form onSubmit={submit}>
         <Field component="input" name="login" type="text" placeholder="Login" />
@@ -100,13 +100,13 @@ function* loginWatcherSaga() {
 
 function* handleLoginSaga(action) {
   const { login, password } = action.payload;
-  
+
   try {
     yield call(apiClient.login, { login, password }); // calling our api method
     // it should return promise
     // promise should be resolved if login successfull
     // or rejected if login credentials is wrong
-    
+
     // so if apiClient promise resolved, then we can notify our form about successful response
     yield put(login.success());
     // do something else here ...
@@ -117,7 +117,7 @@ function* handleLoginSaga(action) {
       login: 'User with this login is not found', // specific field error
       _error: 'Login failed, please check your credentials and try again', // global form error
     });
-    
+
     yield put(login.failure(formError));
   }
 }
@@ -151,8 +151,8 @@ For easy dispatching there are helper params (functions) `request`, `success`, `
 
 ```javascript
 someAction.request(payload) === { type: 'SOME_ACTION_PREFIX_REQUEST', payload };
-someAction.request(success) === { type: 'SOME_ACTION_PREFIX_SUCCESS', payload };
-someAction.request(failure) === { type: 'SOME_ACTION_PREFIX_FAILURE', payload };
+someAction.success(payload) === { type: 'SOME_ACTION_PREFIX_SUCCESS', payload };
+someAction.failure(payload) === { type: 'SOME_ACTION_PREFIX_FAILURE', payload };
 ```
 
 So, when you `put(someAction.success())` in your saga, `SOME_ACTION_PREFIX_SUCCESS` action is triggered and form promise resolves. When you `put(someAction.failure(error))`, `SOME_ACTION_PREFIX_FAILURE` action is triggered and form promise rejects with `error` passed to form (once again: for submit validation you have to pass instance of `SubmissionError`).
@@ -171,4 +171,3 @@ $ npm run test
 ## License
 
 MIT
-
