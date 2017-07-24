@@ -1,4 +1,4 @@
-import { take, takeEvery, race, put, call } from 'redux-saga/effects';
+import { take, takeEvery, race, put, call, all } from 'redux-saga/effects';
 
 const identity = i => i;
 const PROMISE = '@@redux-form-saga/PROMISE';
@@ -54,13 +54,13 @@ function *handlePromiseSaga({ payload }) {
   const { resolve, reject } = defer;
   const [ SUCCESS, FAIL ] = types;
 
-  const [ winner ] = yield [
+  const [ winner ] = yield all([
     race({
       success: take(SUCCESS),
       fail: take(FAIL),
     }),
     put(request),
-  ];
+  ]);
 
   if (winner.success) {
     yield call(resolve, winner.success && winner.success.payload ? winner.success.payload : winner.success);
