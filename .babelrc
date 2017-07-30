@@ -3,12 +3,6 @@
   "env": {
     "commonjs": {
       "presets": ["es2015"]
-    },
-    "es": {
-      "presets": ["es2015"]
-    },
-    "es6": {
-      "presets": ["es2016"]
     }
 },
   "plugins": [
