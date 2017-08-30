@@ -25,7 +25,7 @@
     "no-unused-vars": [1],
     "key-spacing": [0],
     "no-empty": [1],
-    "no-shadow": [0],
+    "no-shadow": [1],
     "no-use-before-define": [0],
     "no-unused-expressions": [1],
     "no-new-func": [0],

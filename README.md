@@ -76,7 +76,7 @@ export default class LoginForm extends Component {
 
     return (
       <form onSubmit={submit}>
-        <Field component="input" name="login" type="text" placeholder="Login" />
+        <Field component="input" name="email" type="email" placeholder="Email" />
         <Field component="input" name="password" type="password" placeholder="Password" />
         <button type="submit">Log in</button>
       </form>
@@ -99,10 +99,10 @@ function* loginWatcherSaga() {
 }
 
 function* handleLoginSaga(action) {
-  const { login, password } = action.payload;
+  const { email, password } = action.payload;
 
   try {
-    yield call(apiClient.login, { login, password }); // calling our api method
+    yield call(apiClient.login, { email, password }); // calling our api method
     // it should return promise
     // promise should be resolved if login successfull
     // or rejected if login credentials is wrong
@@ -114,7 +114,7 @@ function* handleLoginSaga(action) {
     // if apiClient promise rejected, then we will be here
     // we need mark form as failed and pass errors to it
     const formError = new SubmissionError({
-      login: 'User with this login is not found', // specific field error
+      email: 'User with this email is not found', // specific field error
       _error: 'Login failed, please check your credentials and try again', // global form error
     });
 
