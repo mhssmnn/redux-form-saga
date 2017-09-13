@@ -1,14 +1,14 @@
-import { take, takeEvery, race, put, call } from 'redux-saga/effects';
+import { all, take, takeEvery, race, put, call } from 'redux-saga/effects';
 
 const identity = i => i;
 const PROMISE = '@@redux-form-saga/PROMISE';
 const status = ['REQUEST', 'SUCCESS', 'FAILURE'];
 
-function createFormAction (requestAction, types, payloadCreator = identity) {
+function createFormAction(requestAction, types, payloadCreator = identity) {
   const actionMethods = {};
   const formAction = (payload) => ({
     type: PROMISE,
-    payload
+    payload,
   });
 
   // Allow a type prefix to be passed in
@@ -17,7 +17,7 @@ function createFormAction (requestAction, types, payloadCreator = identity) {
       let a = `${requestAction}_${s}`;
       let subAction = payload => ({
         type: a,
-        payload: payloadCreator(payload)
+        payload: payloadCreator(payload),
       });
 
       // translate specific actionType to generic actionType
@@ -43,24 +43,24 @@ function createFormAction (requestAction, types, payloadCreator = identity) {
       dispatch(formAction({
         request: requestAction(data),
         defer: { resolve, reject },
-        types
+        types,
       }));
     });
   }, actionMethods);
-};
+}
 
 function *handlePromiseSaga({ payload }) {
   const { request, defer, types } = payload;
   const { resolve, reject } = defer;
   const [ SUCCESS, FAIL ] = types;
 
-  const [ winner ] = yield [
+  const [ winner ] = yield all([
     race({
       success: take(SUCCESS),
       fail: take(FAIL),
     }),
     put(request),
-  ];
+  ]);
 
   if (winner.success) {
     yield call(resolve, winner.success && winner.success.payload ? winner.success.payload : winner.success);
