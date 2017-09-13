@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import { PROMISE, createFormAction, formActionSaga, handlePromiseSaga } from '../lib';
-import { take, takeEvery, race, put, call } from 'redux-saga/effects';
+import { all, take, takeEvery, race, put, call } from 'redux-saga/effects';
 import { expect } from 'chai';
 import { isFSA } from 'flux-standard-action';
 
@@ -38,7 +38,7 @@ describe('redux-form-saga', () => {
           }
 
           beforeFn();
-        })
+        });
 
         it('should return a promise', () => {
           expect(formAction).to.be.a('function');
@@ -97,7 +97,7 @@ describe('redux-form-saga', () => {
         payload: {
           defer,
           request,
-          types
+          types,
         },
       };
     });
@@ -137,10 +137,10 @@ describe('redux-form-saga', () => {
             }
           };
 
-          expect(iterator.next().value).to.deep.equal([
+          expect(iterator.next().value).to.deep.equal(all([
             race({ success: take(SUCCESS), fail: take(FAILURE) }),
             put(request),
-          ]);
+          ]));
 
           expect(iterator.next([winner]).value).to.deep.equal(
             call(defer.reject, new SubmissionError({ _error: 'A failure!' }))
@@ -150,10 +150,10 @@ describe('redux-form-saga', () => {
 
 
       function run(winner) {
-        expect(iterator.next().value).to.deep.equal([
+        expect(iterator.next().value).to.deep.equal(all([
           race({ success: take(SUCCESS), fail: take(FAILURE) }),
           put(request),
-        ]);
+        ]));
 
         if (winner.success) {
           expect(iterator.next([winner]).value).to.deep.equal(
@@ -174,5 +174,5 @@ function mockCreateLoginRequest(creator) {
   return (data) => ({
     type: REQUEST,
     payload: creator(data)
-  })
+  });
 }
