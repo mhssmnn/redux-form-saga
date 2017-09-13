@@ -47,7 +47,7 @@ function createFormAction (requestAction, types, payloadCreator = identity) {
       }));
     });
   }, actionMethods);
-};
+}
 
 function *handlePromiseSaga({ payload }) {
   const { request, defer, types } = payload;
