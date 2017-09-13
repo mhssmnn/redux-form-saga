@@ -29,10 +29,10 @@
     "flux-standard-action": "^0.6.0",
     "mocha": "^2.3.4",
     "react": "^15.3.1",
-    "redux-saga": "^0.14.2"
+    "redux-saga": "^0.15.6"
   },
   "peerDependencies": {
-    "redux-saga": ">= 0.14.2 < 1"
+    "redux-saga": ">= 0.15.6 < 1"
   },
   "repository": {
     "type": "git",
