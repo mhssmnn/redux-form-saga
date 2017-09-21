@@ -5,7 +5,7 @@ const PROMISE = '@@redux-form-saga/PROMISE';
 let status = ['REQUEST', 'SUCCESS', 'FAILURE'];
 
 function setTypes(statusOverride) {
- status = statusOverride 
+ status = statusOverride;
 }
 
 function createFormAction (requestAction, types, payloadCreator = identity) {
@@ -35,11 +35,11 @@ function createFormAction (requestAction, types, payloadCreator = identity) {
       payloadCreator = types;
     }
 
-    types = [ actionMethods.SUCCESS, actionMethods.FAILURE ];
+    types = [ actionMethods[status[1]], actionMethods[status[2]] ];
   }
 
   if (types.length !== 2) {
-    throw new Error('Must include two action types: [ SUCCESS, FAILURE ]');
+    throw new Error(`Must include two action types: [ ${status[1]}, ${status[2]} ]`);
   }
 
   return Object.assign((data, dispatch) => {
