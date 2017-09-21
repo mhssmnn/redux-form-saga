@@ -18,15 +18,15 @@ function createFormAction (requestAction, types, payloadCreator = identity) {
   // Allow a type prefix to be passed in
   if (typeof requestAction === 'string') {
     requestAction = status.map(s => {
-      let a = `${requestAction}_${s}`;
+      let a = s ? `${requestAction}_${s}` : requestAction;
       let subAction = payload => ({
         type: a,
         payload: payloadCreator(payload)
       });
 
       // translate specific actionType to generic actionType
-      actionMethods[s] = a;
-      actionMethods[s.toLowerCase()] = subAction;
+      actionMethods[s || "REQUEST"] = a;
+      actionMethods[s.toLowerCase() || "request"] = subAction;
 
       return subAction;
     })[0];
