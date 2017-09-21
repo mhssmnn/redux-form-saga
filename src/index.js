@@ -2,7 +2,11 @@ import { take, takeEvery, race, put, call } from 'redux-saga/effects';
 
 const identity = i => i;
 const PROMISE = '@@redux-form-saga/PROMISE';
-const status = ['REQUEST', 'SUCCESS', 'FAILURE'];
+let status = ['REQUEST', 'SUCCESS', 'FAILURE'];
+
+function setTypes(statusOverride) {
+ status = statusOverride 
+}
 
 function createFormAction (requestAction, types, payloadCreator = identity) {
   const actionMethods = {};
@@ -78,6 +82,7 @@ export {
   createFormAction,
   formActionSaga,
   handlePromiseSaga,
+  setTypes,
 }
 
 export default formActionSaga;
