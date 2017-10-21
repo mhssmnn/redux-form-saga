@@ -15,9 +15,10 @@ function createFormAction (requestAction, types, payloadCreator = identity) {
   if (typeof requestAction === 'string') {
     requestAction = status.map(s => {
       let a = `${requestAction}_${s}`;
-      let subAction = payload => ({
+      let subAction = (payload, meta) => ({
         type: a,
-        payload: payloadCreator(payload)
+        payload: payloadCreator(payload),
+        meta
       });
 
       // translate specific actionType to generic actionType

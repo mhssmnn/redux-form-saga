@@ -52,7 +52,7 @@ describe('redux-form-saga', () => {
         it('should dispatch an action with the correct structure', () => {
           expect(action.payload).to.have.keys(['defer', 'request', 'types']);
           expect(action.payload.defer).to.have.keys(['reject', 'resolve']);
-          expect(action.payload.request).to.have.keys(['payload', 'type']);
+          expect(action.payload.request).to.have.keys(['meta', 'payload', 'type']);
           expect(action.payload.types).to.be.an('array');
         });
 
@@ -171,8 +171,9 @@ describe('redux-form-saga', () => {
 
 function mockCreateLoginRequest(creator) {
   creator = creator || (ident => ident);
-  return (data) => ({
+  return (data, meta) => ({
     type: REQUEST,
-    payload: creator(data)
+    payload: creator(data),
+    meta
   })
 }
