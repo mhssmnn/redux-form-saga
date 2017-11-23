@@ -39,10 +39,10 @@ function createFormAction (requestAction, types, payloadCreator = identity) {
     throw new Error('Must include two action types: [ SUCCESS, FAILURE ]');
   }
 
-  return Object.assign((data, dispatch) => {
+  return Object.assign((data, dispatch, meta) => {
     return new Promise((resolve, reject) => {
       dispatch(formAction({
-        request: requestAction(data),
+        request: {...requestAction(data), meta},
         defer: { resolve, reject },
         types
       }));
