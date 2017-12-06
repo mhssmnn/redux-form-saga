@@ -42,7 +42,7 @@ describe('redux-form-saga', () => {
 
         it('should return a promise', () => {
           expect(formAction).to.be.a('function');
-          expect(formAction({}).then).to.be.a('function');
+          expect(formAction(payload, dispatch).then).to.be.a('function');
         });
 
         it('should dispatch an FSA compient action', () => {
