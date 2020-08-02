@@ -104,7 +104,7 @@ function* handleLoginSaga(action) {
   try {
     yield call(apiClient.login, { login, password }); // calling our api method
     // it should return promise
-    // promise should be resolved if login successfull
+    // promise should be resolved if login successful
     // or rejected if login credentials is wrong
 
     // so if apiClient promise resolved, then we can notify our form about successful response
