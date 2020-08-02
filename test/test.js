@@ -137,7 +137,7 @@ describe('redux-form-saga', () => {
             }
           };
 
-          expect(iterator.next().value.ALL).to.deep.equal([
+          expect(iterator.next().value.payload).to.deep.equal([
             race({ success: take(SUCCESS), fail: take(FAILURE) }),
             put(request),
           ]);
@@ -150,7 +150,7 @@ describe('redux-form-saga', () => {
 
 
       function run(winner) {
-        expect(iterator.next().value.ALL).to.deep.equal([
+        expect(iterator.next().value.payload).to.deep.equal([
           race({ success: take(SUCCESS), fail: take(FAILURE) }),
           put(request),
         ]);
