@@ -2,7 +2,11 @@ import { take, takeEvery, race, put, call, all } from 'redux-saga/effects';
 
 const identity = i => i;
 const PROMISE = '@@redux-form-saga/PROMISE';
-const status = ['REQUEST', 'SUCCESS', 'FAILURE'];
+let status = ['REQUEST', 'SUCCESS', 'FAILURE'];
+
+function setTypes(statusOverride) {
+ status = statusOverride;
+}
 
 function createFormAction (requestAction, types, payloadCreator = identity) {
   const actionMethods = {};
@@ -14,15 +18,15 @@ function createFormAction (requestAction, types, payloadCreator = identity) {
   // Allow a type prefix to be passed in
   if (typeof requestAction === 'string') {
     requestAction = status.map(s => {
-      let a = `${requestAction}_${s}`;
+      let a = s ? `${requestAction}_${s}` : requestAction;
       let subAction = payload => ({
         type: a,
         payload: payloadCreator(payload)
       });
 
       // translate specific actionType to generic actionType
-      actionMethods[s] = a;
-      actionMethods[s.toLowerCase()] = subAction;
+      actionMethods[s || "REQUEST"] = a;
+      actionMethods[s.toLowerCase() || "request"] = subAction;
 
       return subAction;
     })[0];
@@ -31,11 +35,11 @@ function createFormAction (requestAction, types, payloadCreator = identity) {
       payloadCreator = types;
     }
 
-    types = [ actionMethods.SUCCESS, actionMethods.FAILURE ];
+    types = [ actionMethods[status[1]], actionMethods[status[2]] ];
   }
 
   if (types.length !== 2) {
-    throw new Error('Must include two action types: [ SUCCESS, FAILURE ]');
+    throw new Error(`Must include two action types: [ ${status[1]}, ${status[2]} ]`);
   }
 
   return Object.assign((data, dispatch) => {
@@ -78,6 +82,7 @@ export {
   createFormAction,
   formActionSaga,
   handlePromiseSaga,
+  setTypes,
 }
 
 export default formActionSaga;
