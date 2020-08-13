@@ -143,7 +143,7 @@ someAction.SUCCESS === 'SOME_ACTION_PREFIX_SUCCESS';
 someAction.FAILURE === 'SOME_ACTION_PREFIX_FAILURE';
 ```
 
-When `someAction` is called, `someAction.REQUEST` action as triggered and all form values a passed as a payload.
+When `someAction` is called, `someAction.REQUEST` action is triggered and all form values are passed as a payload.
 When `someAction.SUCCESS` action is triggered, promise given to `redux-form` (result of calling `someAction(payload, dispatch)`) is resolved, so form notified that submit was successful.
 When `someAction.FAILURE` action is triggered, promise is rejected. For submit validation you have to pass an instance of `SubmissionError` as a payload for the action to send errors to the form.
 
